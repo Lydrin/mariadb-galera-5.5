@@ -8,5 +8,5 @@ RUN  sudo apt-get update \
     && sudo apt-get install -q -y mariadb-galera-server mariadb-client galera
 
 EXPOSE 3306
-COPY my.cnf /etc/mysql/my.cnf
+COPY my.cnf /etc/mysql/conf.d/galera.cnf
 CMD ["mysqld"]
