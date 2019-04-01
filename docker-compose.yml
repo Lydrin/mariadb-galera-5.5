@@ -8,6 +8,9 @@ services:
     networks:
       mariadb:
         ipv4_address: 192.168.200.10
+    volumes:
+      - ./boot:/etc/mysql/conf.d
+      - ./sql_script:/script
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - GALERA=On
@@ -16,10 +19,12 @@ services:
   node1:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_node1
-    command: sudo bash -c "sleep 3; mysqld --wsrep_sst_receive_address=192.168.200.11"
+    command: sudo bash -c "sleep 3; mysqld"
     networks:
       mariadb:
         ipv4_address: 192.168.200.11
+    volumes:
+    - ./node1:/etc/mysql/conf.d
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - GALERA=On
@@ -28,14 +33,16 @@ services:
   node2:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_node2
-    command: sudo bash -c "sleep 3; mysqld --wsrep_sst_receive_address=192.168.200.12"
+    command: sudo bash -c "sleep 3; mysqld"
     networks:
       mariadb:
         ipv4_address: 192.168.200.12
+    volumes:
+    - ./node2:/etc/mysql/conf.d
     environment:
     - MYSQL_ROOT_PASSWORD=test
     - GALERA=On
-    - NODE_NAME=node1
+    - NODE_NAME=node2
 
 
 networks:
