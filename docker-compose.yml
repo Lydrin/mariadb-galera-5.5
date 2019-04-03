@@ -5,9 +5,11 @@ services:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_boot
     command: sudo mysqld --wsrep-new-cluster
-    networks:
-      mariadb:
-        ipv4_address: 192.168.200.10
+    ports:
+      - 3306:3306
+      - 4567:4567
+      - 4568:4568
+      - 4444:4444
     volumes:
       - ./boot:/etc/mysql/conf.d
       - ./sql_script:/script
@@ -20,9 +22,11 @@ services:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_node1
     command: sudo bash -c "sleep 3; mysqld"
-    networks:
-      mariadb:
-        ipv4_address: 192.168.200.11
+    ports:
+      - 3307:3306
+      - 14567:4567
+      - 14568:4568
+      - 4445:4444
     volumes:
     - ./node1:/etc/mysql/conf.d
     environment:
@@ -34,9 +38,11 @@ services:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_node2
     command: sudo bash -c "sleep 3; mysqld"
-    networks:
-      mariadb:
-        ipv4_address: 192.168.200.12
+    ports:
+      - 3308:3306
+      - 24567:4567
+      - 24568:4568
+      - 4446:4444
     volumes:
     - ./node2:/etc/mysql/conf.d
     environment:
@@ -45,11 +51,3 @@ services:
     - NODE_NAME=node2
 
 
-networks:
-  mariadb:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 192.168.200.0/24
-        gateway: 192.168.200.1

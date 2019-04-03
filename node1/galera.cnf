@@ -1,9 +1,13 @@
 [mysqld]
 wsrep_provider=/usr/lib/libgalera_smm.so
-wsrep_cluster_address=gcomm://192.168.200.10,192.168.200.11,192.168.200.12
+wsrep_cluster_address=gcomm://127.0.0.1:4567,127.0.0.1:14567,127.0.0.1:24567
 wsrep_sst_method=rsync
 wsrep_cluster_name=galera_cluster
-wsrep_node_address=192.168.200.11
+port=3307
+wsrep_node_address=127.0.0.1:14567
+wsrep_provider_options="ist.recv_addr=127.0.0.1:14568"
+wsrep_sst_receive_address=127.0.0.1:4445
+bind-address=0.0.0.0
 binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
