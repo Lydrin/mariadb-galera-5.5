@@ -171,4 +171,5 @@ COMMIT;
 --
 CREATE  USER 'apiman' IDENTIFIED BY 'apiman';
 GRANT USAGE ON *.* TO 'apiman'@'%' IDENTIFIED BY 'apiman';
+GRANT ALL PRIVILEGES ON apiman_users.* TO 'apiman'@'%';
 FLUSH PRIVILEGES;
