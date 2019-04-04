@@ -13,6 +13,7 @@ services:
     volumes:
       - ./boot:/etc/mysql/conf.d
       - ./sql_script:/script
+      - ./data/boot:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - GALERA=On
@@ -28,7 +29,8 @@ services:
       - 14568:4568
       - 4445:4445
     volumes:
-    - ./node1:/etc/mysql/conf.d
+      - ./node1:/etc/mysql/conf.d
+      - ./data/node1:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - GALERA=On
@@ -44,10 +46,11 @@ services:
       - 24568:4568
       - 4446:4446
     volumes:
-    - ./node2:/etc/mysql/conf.d
+      - ./node2:/etc/mysql/conf.d
+      - ./data/node2:/var/lib/mysql
     environment:
-    - MYSQL_ROOT_PASSWORD=test
-    - GALERA=On
-    - NODE_NAME=node2
+      - MYSQL_ROOT_PASSWORD=test
+      - GALERA=On
+      - NODE_NAME=node2
 
 
