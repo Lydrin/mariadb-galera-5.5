@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM ubuntu:18.04
 
 RUN  sudo apt-get update \
     && sudo apt install -q -y software-properties-common \
