@@ -14,10 +14,6 @@ services:
       - ./boot:/etc/mysql/conf.d
       - ./sql_script:/script
       - ./data/boot:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=test
-      - GALERA=On
-      - NODE_NAME=boot
 
   node1:
     image: lydrin/mariadb-galera-5.5
@@ -25,16 +21,12 @@ services:
     command: sudo bash -c "sleep 3; mysqld"
     ports:
       - 3307:3306
-      - 14567:4567
-      - 14568:4568
+      - 14567:14567
+      - 14568:14568
       - 4445:4445
     volumes:
       - ./node1:/etc/mysql/conf.d
       - ./data/node1:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=test
-      - GALERA=On
-      - NODE_NAME=node1
 
   node2:
     image: lydrin/mariadb-galera-5.5
@@ -42,15 +34,10 @@ services:
     command: sudo bash -c "sleep 3; mysqld"
     ports:
       - 3308:3306
-      - 24567:4567
-      - 24568:4568
+      - 24567:24567
+      - 24568:24568
       - 4446:4446
     volumes:
       - ./node2:/etc/mysql/conf.d
       - ./data/node2:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=test
-      - GALERA=On
-      - NODE_NAME=node2
-
 

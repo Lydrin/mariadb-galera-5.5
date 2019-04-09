@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+FROM ubuntu:14.04
+
 
 RUN  apt-get update \
     && apt install -q -y software-properties-common \

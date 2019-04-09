@@ -8,8 +8,8 @@ wsrep_node_address=172.17.150.96:4567
 wsrep_node_name=boot
 wsrep_provider_options="ist.recv_addr=172.17.150.96:4568"
 wsrep_sst_receive_address=172.17.150.96:4444
-wsrep_sst_donor=node1,node2
 binlog_format=ROW
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
 innodb_locks_unsafe_for_binlog=1
+wsrep_debug=ON
