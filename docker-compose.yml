@@ -4,7 +4,7 @@ services:
   boot:
     image: lydrin/mariadb-galera-5.5
     container_name: maria_boot
-    command: sudo mysqld --wsrep-new-cluster
+    command: mysqld --wsrep-new-cluster
     ports:
       - 3306:3306
       - 4567:4567
@@ -12,8 +12,10 @@ services:
       - 4444:4444
     volumes:
       - ./boot:/etc/mysql/conf.d
-      - ./sql_script:/script
-      - ./data/boot:/var/lib/mysql
+      - ./data/mariadb/boot:/var/lib/mysql
+      - ./data/mariadb/boot/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: mariadb
 
   node1:
     image: lydrin/mariadb-galera-5.5
@@ -26,7 +28,7 @@ services:
       - 4445:4445
     volumes:
       - ./node1:/etc/mysql/conf.d
-      - ./data/node1:/var/lib/mysql
+      - ./data/mariadb/node1:/var/lib/mysql
 
   node2:
     image: lydrin/mariadb-galera-5.5
@@ -39,25 +41,25 @@ services:
       - 4446:4446
     volumes:
       - ./node2:/etc/mysql/conf.d
-      - ./data/node2:/var/lib/mysql
+      - ./data/mariadb/node2:/var/lib/mysql
 
 
-  keycloak:
-    image: jboss/keycloak
-    container_name: keycloak
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ./data/keycloak/apiman-realm.json:/tmp/apiman-realm.json
-    ports:
-      - 4242:8080
-    environment:
-      - DB_VENDOR=mariadb
-      - DB_ADDR=172.17.150.96:3306,172.17.150.96:3307,172.17.150.96
-      - DB_PORT=3308
-      - DB_DATABASE=keycloak
-      - DB_USER=keycloak
-      - DB_PASSWORD=keycloak
-      - KEYCLOAK_USER=keycloak
-      - KEYCLOAK_PASSWORD=keycloak
-      - PROXY_ADDRESS_FORWARDING=true
-      - KEYCLOAK_IMPORT=/tmp/apiman-realm.json
+#  keycloak:
+#    image: jboss/keycloak
+#    container_name: keycloak
+#    volumes:
+#      - /etc/localtime:/etc/localtime
+#      - ./data/keycloak/apiman-realm.json:/tmp/apiman-realm.json
+#    ports:
+#      - 4242:8080
+#    environment:
+#      - DB_VENDOR=mariadb
+#      - DB_ADDR=172.17.150.96:3306,172.17.150.96:3307,172.17.150.96
+#      - DB_PORT=3308
+#      - DB_DATABASE=keycloak
+#      - DB_USER=keycloak
+#      - DB_PASSWORD=keycloak
+#      - KEYCLOAK_USER=keycloak
+#      - KEYCLOAK_PASSWORD=keycloak
+#      - PROXY_ADDRESS_FORWARDING=true
+#      - KEYCLOAK_IMPORT=/tmp/apiman-realm.json
