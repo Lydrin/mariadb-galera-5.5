@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM ubuntu:14.04
 
 
 RUN groupadd -r mysql && useradd -r -g mysql mysql \
@@ -8,7 +8,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql \
     && add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://mariadb.mirrors.ovh.net/MariaDB/repo/5.5/ubuntu trusty main' \
     && apt-get update \
     && apt-get install -q -y mariadb-galera-server mariadb-client galera \
-    && rm -rf /var/lib/apt/lists/* \\
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d"]
 
