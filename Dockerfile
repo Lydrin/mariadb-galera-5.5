@@ -14,7 +14,9 @@ COPY docker-entrypoint.sh /usr/local/bin
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && ln -s usr/local/bin/docker-entrypoint.sh / \
-    && chown mysql:mysql /var/lib/mysql
+    && rm -rf /var/lib/mysql \
+    && mkdir -p /vr/lib/mysql \
+    && chown -R mysql:mysql /var/lib/mysql
 
 VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d"]
 
