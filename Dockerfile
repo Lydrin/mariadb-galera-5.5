@@ -10,13 +10,13 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql \
     && apt-get install -q -y mariadb-galera-server mariadb-client galera \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d"]
-
 COPY docker-entrypoint.sh /usr/local/bin
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && ln -s usr/local/bin/docker-entrypoint.sh / \
     && chown mysql:mysql /var/lib/mysql
+
+VOLUME ["/var/lib/mysql", "/etc/mysql/conf.d"]
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
