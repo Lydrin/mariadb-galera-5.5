@@ -22,6 +22,8 @@ SET time_zone = "+00:00";
 -- Base de données :  `apiman_users`
 --
 CREATE DATABASE IF NOT EXISTS `apiman_users` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `apiman`;
+CREATE DATABASE IF NOT EXISTS `keycloak`;
 USE `apiman_users`;
 
 -- --------------------------------------------------------
@@ -166,10 +168,17 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+
+--
+-- Ajout utilisateur keycloak
+--
+
+CREATE USER 'keycloak'@'%' IDENTIFIED by 'keycloak';
+GRANT ALL PRIVILEGES ON keycloak.* TO 'keycloak'@'%';
 --
 -- Ajout utilisateur apiman
 --
 CREATE  USER 'apiman' IDENTIFIED BY 'apiman';
-GRANT USAGE ON *.* TO 'apiman'@'%' IDENTIFIED BY 'apiman';
+GRANT ALL PRIVILEGES ON apiman.* TO 'apiman'@'%';
 GRANT ALL PRIVILEGES ON apiman_users.* TO 'apiman'@'%';
 FLUSH PRIVILEGES;

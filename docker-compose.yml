@@ -41,3 +41,23 @@ services:
       - ./node2:/etc/mysql/conf.d
       - ./data/node2:/var/lib/mysql
 
+
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./data/keycloak/apiman-realm.json:/tmp/apiman-realm.json
+    ports:
+      - 4242:8080
+    environment:
+      - DB_VENDOR=mariadb
+      - DB_ADDR=172.17.150.96:3306,172.17.150.96:3307,172.17.150.96
+      - DB_PORT=3308
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=keycloak
+      - KEYCLOAK_USER=keycloak
+      - KEYCLOAK_PASSWORD=keycloak
+      - PROXY_ADDRESS_FORWARDING=true
+      - KEYCLOAK_IMPORT=/tmp/apiman-realm.json
