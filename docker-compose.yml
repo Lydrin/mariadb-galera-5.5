@@ -13,7 +13,7 @@ services:
     volumes:
       - ./boot:/etc/mysql/conf.d
       - ./data/mariadb/boot:/var/lib/mysql
-      - ./data/mariadb/boot/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./data/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: mariadb
 
