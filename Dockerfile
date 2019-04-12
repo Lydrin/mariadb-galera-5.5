@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 
 
-RUN groupadd -r mysql && useradd -r -g mysql mysql
+RUN groupadd -r mysql && useradd -r -g mysql mysql \
     && apt-get update \
     && apt install -q -y software-properties-common \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db \
