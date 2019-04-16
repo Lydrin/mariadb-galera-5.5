@@ -3,45 +3,44 @@ version: '2'
 services:
   boot:
     image: lydrin/mariadb-galera-5.5
-    container_name: maria_boot
+    container_name: boot
     command: mysqld --wsrep-new-cluster
-    ports:
-      - 3306:3306
-      - 4567:4567
-      - 4568:4568
-      - 4444:4444
     volumes:
-      - ./boot:/etc/mysql/conf.d
-      - ./data/mariadb/boot:/var/lib/mysql
-      - ./data/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    - ./boot:/etc/mysql/conf.d
+    - ./data/mariadb/boot:/var/lib/mysql
+    - ./data/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: mariadb
+    networks:
+      - bea
 
   node1:
     image: lydrin/mariadb-galera-5.5
-    container_name: maria_node1
+    container_name: node1
     command: sudo bash -c "sleep 3; mysqld"
-    ports:
-      - 3307:3306
-      - 14567:14567
-      - 14568:14568
-      - 4445:4445
     volumes:
-      - ./node1:/etc/mysql/conf.d
-      - ./data/mariadb/node1:/var/lib/mysql
+    - ./node1:/etc/mysql/conf.d
+    - ./data/mariadb/node1:/var/lib/mysql
+    networks:
+      - bea
 
   node2:
     image: lydrin/mariadb-galera-5.5
-    container_name: maria_node2
+    container_name: node2
     command: sudo bash -c "sleep 3; mysqld"
-    ports:
-      - 3308:3306
-      - 24567:24567
-      - 24568:24568
-      - 4446:4446
     volumes:
-      - ./node2:/etc/mysql/conf.d
-      - ./data/mariadb/node2:/var/lib/mysql
+    - ./node2:/etc/mysql/conf.d
+    - ./data/mariadb/node2:/var/lib/mysql
+    networks:
+      - bea
+
+networks:
+  bea:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.42.0/24
 
 
 #  keycloak:
