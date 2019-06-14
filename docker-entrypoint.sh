@@ -184,4 +184,24 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 fi
 
+if [ "$2" = "--init" ]; then
+    #Si on souhaite initialiser le cluster
+    echo 'I was called with --init'
+    if [ $DATADIR/grastate.dat ]; then
+        echo 'It is not a new cluster, checking if it is safe to bootstrap'
+        SAFE_TO_BOOTSTRAP=$(grep safe_to_bootstrap $DATADIR/grastate.dat | cut -d':' -f2 | sed 's/ //g')
+        echo 'safe_to_bootstrap=$SAFE_TO_BOOTSTRAP'
+        if [ $SAFE_TO_BOOTSTRAP -eq 1 ]; then
+            echo 'The cluster is safe to bootstrap'
+        else
+            echo 'The cluster is not safe to bootstrap'
+        fi
+        #Dans le cas où le cluster existe déja
+    else
+        #Dans le cas où le cluster n'existe pas
+        echo 'It is a new cluster'
+        export _WSREP_NEW_CLUSTER='--wsrep-new-cluster'
+    fi
+
+fi
 exec "$@"

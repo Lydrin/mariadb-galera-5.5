@@ -1,8 +1,8 @@
-version: '2'
+version: "3"
 
 services:
   boot:
-    image: lydrin/mariadb-galera-5.5
+    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
     container_name: boot
     command: mysqld --wsrep-new-cluster
     volumes:
@@ -13,26 +13,63 @@ services:
       MYSQL_ROOT_PASSWORD: mariadb
     networks:
       - bea
+    ports:
+      - 3306:3306
 
   node1:
-    image: lydrin/mariadb-galera-5.5
+    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
     container_name: node1
-    command: sudo bash -c "sleep 3; mysqld"
+    command: sudo bash -c "sleep 15; mysqld"
     volumes:
     - ./node1:/etc/mysql/conf.d
     - ./data/mariadb/node1:/var/lib/mysql
     networks:
       - bea
+    ports:
+      - 3307:3306
 
   node2:
-    image: lydrin/mariadb-galera-5.5
+    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
     container_name: node2
-    command: sudo bash -c "sleep 3; mysqld"
+    command: sudo bash -c "sleep 15; mysqld"
     volumes:
     - ./node2:/etc/mysql/conf.d
     - ./data/mariadb/node2:/var/lib/mysql
     networks:
       - bea
+    ports:
+      - 3308:3306
+
+
+#  keycloak:
+#    image: container.mari-sncf.io/archiciel/kernel-keycloak
+#    container_name: keycloak
+#    volumes:
+#      - /etc/localtime:/etc/localtime
+#      - ./data/keycloak/apiman-realm.json:/tmp/apiman-realm.json
+#      - ./data/keycloak/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+#    networks:
+#      - bea
+#    ports:
+#      - 8080:8080
+#      - 8443:8443
+#    environment:
+#      - KEYCLOAK_IMPORT=/tmp/apiman-realm.json
+#      - KEYCLOAK_USER=keycloak
+#      - KEYCLOAK_PASSWORD=keycloak
+#
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin
+#    container_name: phpmyadmin
+#    networks:
+#      - bea
+#    ports:
+#      - 4242:80
+#    environment:
+#      PMA_HOSTS: "boot,node1,node2"
+#      PMA_PORTS: "3306,3306,3306"
+#      PMA_USER: "root"
+#      PMA_PASSWORD: "mariadb"
 
 networks:
   bea:
@@ -40,25 +77,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.42.0/24
+      - subnet: 192.168.42.0/24
 
-
-#  keycloak:
-#    image: jboss/keycloak
-#    container_name: keycloak
-#    volumes:
-#      - /etc/localtime:/etc/localtime
-#      - ./data/keycloak/apiman-realm.json:/tmp/apiman-realm.json
-#    ports:
-#      - 4242:8080
-#    environment:
-#      - DB_VENDOR=mariadb
-#      - DB_ADDR=172.17.150.96:3306,172.17.150.96:3307,172.17.150.96
-#      - DB_PORT=3308
-#      - DB_DATABASE=keycloak
-#      - DB_USER=keycloak
-#      - DB_PASSWORD=keycloak
-#      - KEYCLOAK_USER=keycloak
-#      - KEYCLOAK_PASSWORD=keycloak
-#      - PROXY_ADDRESS_FORWARDING=true
-#      - KEYCLOAK_IMPORT=/tmp/apiman-realm.json
