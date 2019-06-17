@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 set -eo pipefail
 shopt -s nullglob
 
@@ -192,16 +193,22 @@ if [ "$2" = "--init" ]; then
         SAFE_TO_BOOTSTRAP=$(grep safe_to_bootstrap $DATADIR/grastate.dat | cut -d':' -f2 | sed 's/ //g')
         echo 'safe_to_bootstrap=$SAFE_TO_BOOTSTRAP'
         if [ $SAFE_TO_BOOTSTRAP -eq 1 ]; then
+            #Dans le cas où le cluster s'est correctement stoppé, on peut alors le redemmarer sans problème
             echo 'The cluster is safe to bootstrap'
         else
+            #Cas où le cluster s'est arrété de manière incorrecte, pas possible de le redémarrer comme ça
             echo 'The cluster is not safe to bootstrap'
         fi
-        #Dans le cas où le cluster existe déja
     else
         #Dans le cas où le cluster n'existe pas
         echo 'It is a new cluster'
         export _WSREP_NEW_CLUSTER='--wsrep-new-cluster'
     fi
-
+else
+	echo 'I was not called with init'
 fi
-exec "$@"
+
+
+echo 'Executing mysql'
+echo '@ is ${$@}'
+exec "$@" $_WSREP_NEW_CLUSTER

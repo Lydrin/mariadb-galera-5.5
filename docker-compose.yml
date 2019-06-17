@@ -4,7 +4,7 @@ services:
   boot:
     image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
     container_name: boot
-    command: mysqld --wsrep-new-cluster
+    command: mysqld --init
     volumes:
     - ./boot:/etc/mysql/conf.d
     - ./data/mariadb/boot:/var/lib/mysql
