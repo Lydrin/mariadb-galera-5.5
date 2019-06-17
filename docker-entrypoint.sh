@@ -42,7 +42,7 @@ file_env() {
 }
 
 _check_config() {
-	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
+	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
@@ -58,22 +58,22 @@ _check_config() {
 # latter only show values present in config files, and not server defaults
 _get_config() {
 	local conf="$1"; shift
-	"$@" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
+	mysqld --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
 		| awk '$1 == "'"$conf"'" && /^[^ \t]/ { sub(/^[^ \t]+[ \t]+/, ""); print; exit }'
 	# match "datadir      /some/path with/spaces in/it here" but not "--xyz=abc\n     datadir (xyz)"
 }
 
 if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	# still need to check config, container may have started with --user
-	_check_config "$@"
+	_check_config "$1"
 	# Get config
-	DATADIR="$(_get_config 'datadir' "$@")"
+	DATADIR="$(_get_config 'datadir' "$1")"
 
 	if [ ! -d "$DATADIR/mysql" ]; then
 		file_env 'MYSQL_ROOT_PASSWORD'
 		if [ -z "$MYSQL_ROOT_PASSWORD" -a -z "$MYSQL_ALLOW_EMPTY_PASSWORD" -a -z "$MYSQL_RANDOM_ROOT_PASSWORD" ]; then
 			echo >&2 'error: database is uninitialized and password option is not specified '
-			echo >&2 '  You need to specify one of MYSQL_ROOT_PASSWORD, MYSQL_ALLOW_EMPTY_PASSWORD and MYSQL_RANDOM_ROOT_PASSWORD'
+			echo >&2 'You need to specify one of MYSQL_ROOT_PASSWORD, MYSQL_ALLOW_EMPTY_PASSWORD and MYSQL_RANDOM_ROOT_PASSWORD'
 			exit 1
 		fi
 
@@ -91,8 +91,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		mysql_install_db "${installArgs[@]}" "${@:2}"
 		echo 'Database initialized'
 
-		SOCKET="$(_get_config 'socket' "$@")"
-		"$@" --skip-networking --socket="${SOCKET}" &
+		SOCKET="$(_get_config 'socket' "$1")"
+		"$1" --skip-networking --socket="${SOCKET}" &
 		pid="$!"
 
 		mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
@@ -211,4 +211,4 @@ fi
 
 echo 'Executing mysql'
 echo '@ is ${$@}'
-exec "$@" $_WSREP_NEW_CLUSTER
+exec "$1" $_WSREP_NEW_CLUSTER
