@@ -43,7 +43,7 @@ file_env() {
 
 _check_config() {
 	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
-	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
+	if ! errors="$("${toRun}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
 			command was: "${toRun[*]}"
@@ -210,5 +210,4 @@ fi
 
 
 echo 'Executing mysql'
-echo '@ is ${$@}'
 exec "$1" $_WSREP_NEW_CLUSTER
