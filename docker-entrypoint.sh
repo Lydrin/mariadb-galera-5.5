@@ -88,7 +88,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			installArgs+=( --auth-root-authentication-method=normal )
 		fi
 		# "Other options are passed to mysqld." (so we pass all "mysqld" arguments directly here)
-		mysql_install_db "${installArgs[@]}" "${@:2}"
+		mysql_install_db "${installArgs[@]}"
 		echo 'Database initialized'
 
 		SOCKET="$(_get_config 'socket' "$1")"
