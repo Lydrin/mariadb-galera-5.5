@@ -188,7 +188,7 @@ fi
 if [ "$2" = "--init" ]; then
     #Si on souhaite initialiser le cluster
     echo 'I was called with --init'
-    if [ $DATADIR/grastate.dat ]; then
+    if [ -f $DATADIR/grastate.dat ]; then
         echo 'It is not a new cluster, checking if it is safe to bootstrap'
         SAFE_TO_BOOTSTRAP=$(grep safe_to_bootstrap $DATADIR/grastate.dat | cut -d':' -f2 | sed 's/ //g')
         echo 'safe_to_bootstrap=$SAFE_TO_BOOTSTRAP'
