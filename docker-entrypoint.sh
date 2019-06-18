@@ -60,6 +60,7 @@ _check_config() {
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
 _get_config() {
+	echo "The first argument is $1"
 	local conf="$1"; shift
 	#Changement $@ en $1 ici pour éviter d'avoir le cas de figure mysqld --init --verbose...
 	"$1" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
@@ -71,6 +72,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	# still need to check config, container may have started with --user
 	_check_config "$@"
 	# Get config
+	echo 'The array of all arguments is $@'
 	DATADIR="$(_get_config 'datadir' "$@")"
 
 	if [ ! -d "$DATADIR/mysql" ]; then
