@@ -201,6 +201,7 @@ if [ "$2" = "--init" ]; then
         if [ $SAFE_TO_BOOTSTRAP -eq 1 ]; then
             #Dans le cas où le cluster s'est correctement stoppé, on peut alors le redemmarer sans problème
             echo 'The cluster is safe to bootstrap'
+			export _WSREP_NEW_CLUSTER='--wsrep-new-cluster'
         else
             #Cas où le cluster s'est arrété de manière incorrecte, pas possible de le redémarrer comme ça
             echo 'The cluster is not safe to bootstrap'
