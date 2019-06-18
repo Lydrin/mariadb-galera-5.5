@@ -46,6 +46,10 @@ _check_config() {
 	# Declare toRun comme étant un array contenant des mots
 	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
 	#Execute toute la commande contenue dans toRun
+	echo "Data in the array is:"
+	echo ${toRun[*]}
+	echo "Data in the array is:"
+	echo ${toRun[@]}
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
