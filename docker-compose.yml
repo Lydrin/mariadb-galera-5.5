@@ -2,7 +2,7 @@ version: "3"
 
 services:
   boot:
-    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
+    image: lydrin/mariadb-galera-5.5:latest
     container_name: boot
     command: mysqld --init
     volumes:
@@ -17,7 +17,7 @@ services:
       - 3306:3306
 
   node1:
-    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
+    image: lydrin/mariadb-galera-5.5:latest
     container_name: node1
     command: sudo bash -c "sleep 15; mysqld"
     volumes:
@@ -29,7 +29,7 @@ services:
       - 3307:3306
 
   node2:
-    image: container.mari-sncf.io/archiciel/kernel-ubuntu14-mariadb-galera5.5.63
+    image: lydrin/mariadb-galera-5.5:latest
     container_name: node2
     command: sudo bash -c "sleep 15; mysqld"
     volumes:

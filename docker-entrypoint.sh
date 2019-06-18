@@ -46,10 +46,6 @@ _check_config() {
 	# Declare toRun comme étant un array contenant des mots
 	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
 	#Execute toute la commande contenue dans toRun
-	echo "Data in the array is:"
-	echo ${toRun[*]}
-	echo "Data in the array is:"
-	echo ${toRun[@]}
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
@@ -64,7 +60,6 @@ _check_config() {
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
 _get_config() {
-	echo "The first argument is $1"
 	local conf="$1"; shift
 	#Changement $@ en $1 ici pour éviter d'avoir le cas de figure mysqld --init --verbose...
 	"$1" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
@@ -76,7 +71,6 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	# still need to check config, container may have started with --user
 	_check_config "$@"
 	# Get config
-	echo 'The array of all arguments is $@'
 	DATADIR="$(_get_config 'datadir' "$@")"
 
 	if [ ! -d "$DATADIR/mysql" ]; then
@@ -98,7 +92,6 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			installArgs+=( --auth-root-authentication-method=normal )
 		fi
 		# "Other options are passed to mysqld." (so we pass all "mysqld" arguments directly here)
-		echo 'Calling mysql_install_db ${installArgs[@]} ${@:2}'
 		#Vire le ${@:2} pour éviter d'avoir le --init qui fout la merde
 		mysql_install_db "${installArgs[@]}"
 		echo 'Database initialized'
