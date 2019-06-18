@@ -1,9 +1,10 @@
 #!/bin/bash
-set -x
+set -x #Debugging
 set -eo pipefail
 shopt -s nullglob
 
-# if command starts with an option, prepend mysqld
+# Si la commande commence par une option, on rajoute mysqld devant
+# Le if récupère le premier caractère de $1
 if [ "${1:0:1}" = '-' ]; then
 	set -- mysqld "$@"
 fi
@@ -42,8 +43,10 @@ file_env() {
 }
 
 _check_config() {
+	# Declare toRun comme étant un array contenant des mots
 	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
-	if ! errors="$("${toRun}" 2>&1 >/dev/null)"; then
+	#Execute toute la commande contenue dans toRun
+	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
 			command was: "${toRun[*]}"
@@ -58,16 +61,17 @@ _check_config() {
 # latter only show values present in config files, and not server defaults
 _get_config() {
 	local conf="$1"; shift
-	mysqld --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
+	#Changement $@ en $1 ici pour éviter d'avoir le cas de figure mysqld --init --verbose...
+	"$1" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
 		| awk '$1 == "'"$conf"'" && /^[^ \t]/ { sub(/^[^ \t]+[ \t]+/, ""); print; exit }'
 	# match "datadir      /some/path with/spaces in/it here" but not "--xyz=abc\n     datadir (xyz)"
 }
 
 if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	# still need to check config, container may have started with --user
-	_check_config "$1"
+	_check_config "$@"
 	# Get config
-	DATADIR="$(_get_config 'datadir' "$1")"
+	DATADIR="$(_get_config 'datadir' "$@")"
 
 	if [ ! -d "$DATADIR/mysql" ]; then
 		file_env 'MYSQL_ROOT_PASSWORD'
@@ -88,10 +92,13 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			installArgs+=( --auth-root-authentication-method=normal )
 		fi
 		# "Other options are passed to mysqld." (so we pass all "mysqld" arguments directly here)
+		echo 'Calling mysql_install_db ${installArgs[@]} ${@:2}'
+		#Vire le ${@:2} pour éviter d'avoir le --init qui fout la merde
 		mysql_install_db "${installArgs[@]}"
 		echo 'Database initialized'
 
-		SOCKET="$(_get_config 'socket' "$1")"
+		SOCKET="$(_get_config 'socket' "$@")"
+		#Passage à $1 pour éviter le cas mysqld --init
 		"$1" --skip-networking --socket="${SOCKET}" &
 		pid="$!"
 
