@@ -209,7 +209,6 @@ if [[ $* = *--init* ]]; then
         echo 'Initialising a new cluster'
         export _WSREP_NEW_CLUSTER='--wsrep-new-cluster'
     fi
-else
 fi
 
 echo 'Executing mysql'
